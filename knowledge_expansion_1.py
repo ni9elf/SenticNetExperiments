@@ -107,8 +107,8 @@ def expand_knowledge():
     
     #iterate over all nouns in wordnet
     #stop when MAX_POS_WORDS postive and MAX_NEG_WORDS negative words are got     
-    MAX_POS_WORDS = 1000
-    MAX_NEG_WORDS = 1000
+    MAX_POS_WORDS = 100000
+    MAX_NEG_WORDS = 100000
     pos_counter = 0   
     neg_counter = 0
     for synset in wn.all_synsets('n'):
@@ -162,10 +162,23 @@ def expand_knowledge():
         concept = str(synset.name()[:-5]).lower() 
         #if we have found a new input concept for SenticNet
         if (concept not in senticnet):
+            #flag_length checks if we have 5 semantics
+            flag_length = 0
+            top_semantics = []
             pos_concept_counter += 1
             #sort all words in same corpus based on similarity measure to this word
-            sorted_semantics = sorted(pos_word_scores[word].items(), key=lambda x: x[1], reverse = True)[0:5]   
-            top_semantics = [str(pair[0]).lower() for pair in sorted_semantics]             
+            sorted_semantics = sorted(pos_word_scores[word].items(), key=lambda x: x[1], reverse = True)
+            #all 5 semantic should have same polarity as the root concept
+            for pair in sorted_semantics:
+                semantic = swn.senti_synset((str(pair[0]).lower()))
+                polarity = 'positive' if semantic.pos_score() > semantic.neg_score() else 'negative'
+                if (polarity == 'positive'):
+                    top_semantics.append(str(pair[0]).lower())
+                if (len(top_semantics) == 5):
+                    flag_length = 1              
+                    break
+            if (flag_length == 0):
+                continue             
             #print concept, concept_info[concept]
             #find appropriate tags
             tag1, tag2 = get_mood_tag(synset, 'positive') 
@@ -176,16 +189,30 @@ def expand_knowledge():
             f_csv.writerow([lmtz_concept_name] + concept_info[concept])                                                           
             f_pos_txt.write(str(lmtz_concept_name) + ' ' + ' '.join([str(item) for item in concept_info[concept]]) + '\n') 
             f_pos_csv.writerow([lmtz_concept_name] + concept_info[concept])             
+
     for word in neg_words:
         synset = wn.synset(word)
         s_synset = swn.senti_synset(synset.name())
         concept = str(synset.name()[:-5]).lower()     
         #if we have found a new input concept for SenticNet
         if (concept not in senticnet):
+            #flag_length checks if we have 5 semantics
+            flag_length = 0
+            top_semantics = []        
             neg_concept_counter += 1
             #sort all words in same corpus based on similarity measure to this word
-            sorted_semantics = sorted(neg_word_scores[word].items(), key=lambda x: x[1], reverse = True)[0:5]   
-            top_semantics = [str(pair[0]).lower() for pair in sorted_semantics]             
+            sorted_semantics = sorted(neg_word_scores[word].items(), key=lambda x: x[1], reverse = True)  
+            #all 5 semantic should have same polarity as the root concept
+            for pair in sorted_semantics:
+                semantic = swn.senti_synset((str(pair[0]).lower()))
+                polarity = 'positive' if semantic.pos_score() > semantic.neg_score() else 'negative'
+                if (polarity == 'negative'):
+                    top_semantics.append(str(pair[0]).lower())
+                if (len(top_semantics) == 5):
+                    flag_length = 1              
+                    break
+            if (flag_length == 0):
+                continue            
             #print concept, concept_info[concept]
             #find appropriate tags
             tag1, tag2 = get_mood_tag(synset, 'negative') 
