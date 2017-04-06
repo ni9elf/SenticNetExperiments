@@ -107,8 +107,8 @@ def expand_knowledge():
     
     #iterate over all nouns in wordnet
     #stop when MAX_POS_WORDS postive and MAX_NEG_WORDS negative words are got
-    MAX_POS_WORDS = 5500
-    MAX_NEG_WORDS = 5500
+    MAX_POS_WORDS = 5000
+    MAX_NEG_WORDS = 5000
     pos_counter = 0   
     neg_counter = 0
     for synset in wn.all_synsets('n'):
