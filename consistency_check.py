@@ -2,9 +2,7 @@ from senticnet4 import *
 from nltk import pos_tag
 from nltk.stem import WordNetLemmatizer
 from nltk.corpus import wordnet
-from sentiwordnet_python_wrapper import SentiWordNetCorpusReader, SentiSynset
-
-#sentiwordnet_python_wrapper.py is written by Chris Potts, refer http://compprag.christopherpotts.net/wordnet.html
+from nltk.corpus import sentiwordnet as swn
 
 #to convert from treebank tag set to wordnet tag set
 def get_wordnet_pos(treebank_tag):
@@ -24,7 +22,7 @@ def get_wordnet_pos(treebank_tag):
         return wordnet.NOUN
         
         
-def checks():
+def checks_intra():
     '''
     Runs following consistency checks within senticnet:
     1) Checks if the set of semantics of a concept are defined concepts themselves in sentic net
@@ -73,7 +71,9 @@ def checks():
                     semantic_polarity = senticnet[semantic][6]
                     #if semantic has does not have polarity as concept
                     if (semantic_polarity != concept_info[6]):
+                        print concept, semantic
                         semantic_concept_polarity_mismatch.add((concept, semantic))
+                        break
 
             #checking for interest-surprise or fear-anger used together in tags of a concept
             if ((concept_info[4] == 'interest' and concept_info[5] == 'surprise') or (concept_info[4] == 'surprise' and concept_info[5] == 'interest') or (concept_info[4] == 'fear' and concept_info[5] == 'anger') or (concept_info[4] == 'anger' and concept_info[5] == 'fear')):
@@ -205,25 +205,21 @@ def check_inter_sentiwordnet():
     #polarity confusion matrix between SenticNet and SentiWordNet for overlapping words taking the later as the correct labels
     #assumes positive polarity if pos score > neg score and negative polarity if neg score < pos score
     #ignore comparisons for non sentiment words, i.e., words having same positive and negative polarity value in SentiWordNet
-    swn_filename = 'SentiWordNet_3.0.0_20130122.txt'
-    swn = SentiWordNetCorpusReader(swn_filename)
     false_positive = 0
     false_negative = 0
     true_positive = 0
-    true_negative = 0 
+    true_negative = 0     
     for senti_synset in swn.all_senti_synsets():
         word = senti_synset.synset.name()[:-5]
-        pos_score = senti_synset.pos_score
-        neg_score = senti_synset.neg_score
+        pos_score = senti_synset.pos_score()
+        neg_score = senti_synset.neg_score()
         #ignore non sentiment words
         if (pos_score == neg_score):
             continue
-        polarity = 'positive' if pos_score >= neg_score else 'negative'
+        polarity = 'positive' if pos_score > neg_score else 'negative'
         if (word in senticnet):
             if (polarity == 'positive'):
                 if (senticnet[word][6] == 'negative'):
-                    print word 
-                    break
                     false_negative += 1
                 else:
                     true_positive += 1         
@@ -231,7 +227,7 @@ def check_inter_sentiwordnet():
                 if (senticnet[word][6] == 'positive'):
                     false_positive += 1
                 else:
-                    true_negative += 1                        
+                    true_negative += 1                       
     print "\nComparison Statistics with SentiWordNet\n"
     print_comparison_stats(true_positive, true_negative, false_positive, false_negative)     
     
@@ -278,10 +274,10 @@ def check_inter_harvard_general_inquirer():
     
 if __name__ == '__main__':
     #runs various consistency checks within SenticNet
-    #checks_intra()       
+    checks_intra()       
     #runs various consistency checks between SenticNet and other models:
     #Bing Liu's Opinion Lexicon, MPQA Subjectivity Lexicon, SentiWordNet, Harvard General Inquirer
-    #check_inter_bing_liu_opinion_lexicon()
-    #check_inter_mpqa_subjectivity_lexicon()
-    #check_inter_sentiwordnet()
+    check_inter_bing_liu_opinion_lexicon()
+    check_inter_mpqa_subjectivity_lexicon()
+    check_inter_sentiwordnet()
     check_inter_harvard_general_inquirer()    
