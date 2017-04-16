@@ -39,7 +39,7 @@ def checks_intra():
     violated_tag_constraint_concepts = set()
     unlemmatized_concepts = set()
     #reading from file 'senticnet4.txt' for a list of concepts to iterate over
-    with open('senticnet4.txt', 'r') as f:
+    with open('Data/senticnet4.txt', 'r') as f:
         for line in f:            
             line = line.strip().split('\t')
             concept = line[0]
@@ -121,13 +121,13 @@ def check_inter_bing_liu_opinion_lexicon():
     #polarity confusion matrix between SenticNet and Bing Liu's Opinion Lexicon for overlapping words taking the later as the correct labels
     negative_words_bing_liu = []
     positive_words_bing_liu = []
-    with open('BingLiuOpinionLexiconEnglish/negative_words.txt') as f_neg:
+    with open('Data/BingLiuOpinionLexiconEnglish/negative_words.txt') as f_neg:
         i = 0
         for line in f_neg:                    
             if (i >= 35):
                 negative_words_bing_liu.append(line.strip())
             i += 1;
-    with open('BingLiuOpinionLexiconEnglish/positive_words.txt') as f_pos:
+    with open('Data/BingLiuOpinionLexiconEnglish/positive_words.txt') as f_pos:
         i = 0
         for line in f_pos:                    
             if (i >= 35):
@@ -168,7 +168,7 @@ def check_inter_mpqa_subjectivity_lexicon():
     #polarity confusion matrix between SenticNet and MPQA Subjectivity Lexicon for overlapping words taking the later as the correct labels
     negative_words = []
     positive_words = []
-    with open('MPQASubjectivityLexicon/subjectivity_clues.tff', 'r') as f:
+    with open('Data/MPQASubjectivityLexicon/subjectivity_clues.tff', 'r') as f:
         for line in f:
             line = line.strip().split()
             word = line[2][6:]
@@ -241,7 +241,7 @@ def check_inter_harvard_general_inquirer():
     #note that pstv is an older tag for positive and ngtv is an older tag for negative
     negative_words = []
     positive_words = []
-    with open('harvard_general_inquirer.txt', 'r') as f:
+    with open('Data/harvard_general_inquirer.txt', 'r') as f:
         for line in f:        
             #skip first line
             line = line.strip().split(' ')

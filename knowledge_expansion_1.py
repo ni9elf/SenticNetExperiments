@@ -14,7 +14,7 @@ def get_mood_tag(this_synset, polarity):
     '''
     Computes closest two mood tags to the input concept using Lin's similarity measure. If Lin similarity measure cannot be applied, chooses two random tags within tag constraints.
     '''
-    #TODO: Should explore relatedness measure instead of randomly sampling  
+    #TODO: Should explore other relatedness measure instead of randomly sampling  
     #since similarity measure will work only for words having same pos, we have to form tags in different pos version to compute similarity
     #if pos is a noun
     #print this_synset.pos()
@@ -75,15 +75,15 @@ def expand_knowledge():
     '''
     lmtzr = WordNetLemmatizer()   
     #create and write file headers
-    f_txt = open('Output/2/new_sentic_concepts_2.txt', 'w')
-    f_pos_txt = open('Output/2/new_positive_sentic_concepts_2.txt', 'w')
-    f_neg_txt = open('Output/2/new_negative_sentic_concepts_2.txt', 'w')
+    f_txt = open('Output/1/new_sentic_concepts_2.txt', 'w')
+    f_pos_txt = open('Output/1/new_positive_sentic_concepts_2.txt', 'w')
+    f_neg_txt = open('Output/1/new_negative_sentic_concepts_2.txt', 'w')
     f_txt.write('Concept ' + 'MoodTag1 ' + 'MoodTag2 ' + 'Semantic1 ' + 'Semantic2 ' + 'Semantic3 ' + 'Semantic4 ' + 'Semantic5' + '\n\n')
     f_pos_txt.write('Concept ' + 'MoodTag1 ' + 'MoodTag2 ' + 'Semantic1 ' + 'Semantic2 ' + 'Semantic3 ' + 'Semantic4 ' + 'Semantic5' + '\n\n')
     f_neg_txt.write('Concept ' + 'MoodTag1 ' + 'MoodTag2 ' + 'Semantic1 ' + 'Semantic2 ' + 'Semantic3 ' + 'Semantic4 ' + 'Semantic5' + '\n\n')
-    csvfile = open('Output/2/new_sentic_concepts_2.csv', 'wb')
-    csvfile_pos = open('Output/2/new_positive_sentic_concepts_2.csv', 'wb')
-    csvfile_neg = open('Output/2/new_negative_sentic_concepts_2.csv', 'wb')
+    csvfile = open('Output/1/new_sentic_concepts_2.csv', 'wb')
+    csvfile_pos = open('Output/1/new_positive_sentic_concepts_2.csv', 'wb')
+    csvfile_neg = open('Output/1/new_negative_sentic_concepts_2.csv', 'wb')
     f_csv = csv.writer(csvfile, delimiter=',')
     f_pos_csv = csv.writer(csvfile_pos, delimiter=',')
     f_neg_csv = csv.writer(csvfile_neg, delimiter=',')
